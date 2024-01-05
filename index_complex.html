@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Style Transfer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.3/socket.io.js"></script>
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        function changeStyle(styleIndex) {
+            socket.emit('style_change', styleIndex);
+        }
+    </script>
+</head>
+<body>
+    <h1>Real-Time Style Transfer</h1>
+    <select onchange="changeStyle(this.value)">
+        <option value="0">Style 1</option>
+        <option value="1">Style 2</option>
+        <!-- Add more style options as needed -->
+    </select>
+    <br>
+    <img id="video_feed" src="" width="1280" height="480">
+    <script>
+        var videoFeed = document.getElementById('video_feed');
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        socket.on('video_feed', function (data) {
+            videoFeed.src = 'data:image/jpeg;base64,' + btoa(String.fromCharCode.apply(null, new Uint8Array(data.frame)));
+        });
+    </script>
+</body>
+</html>
